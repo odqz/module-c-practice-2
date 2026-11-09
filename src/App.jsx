@@ -21,9 +21,7 @@ function App() {
             <Route element={<Login/>} path="/login"></Route>
           </Route>
           
-          <Route element={<AuthRoute/>}>
-            <Route element={<Events/>} path="/events"></Route>
-          </Route>
+          <Route element={<Events/>} path="/"></Route>
 
           <Route element={<AuthRoute/>}>
             <Route element={<Orders/>} path="/orders"></Route>
