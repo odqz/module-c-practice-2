@@ -11,7 +11,7 @@ export function Login() {
   function authenticateUser(e) {
     e.preventDefault()
 
-    API.post('/auth/login', {'username': username, 'password': password})
+    API.post('/auth/login', {username, password})
     .then(res => {
       localStorage.setItem('auth-token', res.data.accessToken)
       nav('/')
