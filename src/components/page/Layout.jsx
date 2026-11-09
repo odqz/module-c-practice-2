@@ -1,4 +1,15 @@
+import { useNavigate } from "react-router-dom"
+
 export function Layout({children}) {
+  const authToken = localStorage.getItem('auth-token')
+  const nav = useNavigate()
+
+  function logoutUser(e) {
+    e.preventDefault()
+    localStorage.removeItem('auth-token')
+    nav('/login')
+  }
+
   return (
     <>
       <div className="app-wrapper">
@@ -14,22 +25,23 @@ export function Layout({children}) {
 
             <nav className="nav">
               <ul>
+                {/* Always shown */}
                 <li><a href="/" className="nav-link">Events</a></li>
 
-                <li><a href="/login" className="nav-link">Login</a></li>
+                {/* Only shown when logged out */}
+                { authToken ? '' : <li><a href="/login" className="nav-link">Login</a></li> }
+                { authToken ? '' : <li><a href="/register" className="nav-link">Register</a></li> }
 
-                <li><a href="/profile" className="nav-link">Profile</a></li>
-                
-                <li className="basket-link">
-                  <a href="/basket" className="nav-link">
-                    Basket
-                    <span className="basket-count">0</span>
-                  </a>
-                </li>
-
-                <li><a href="/logout" className="nav-link">Logout</a></li>
-
-                <li><a href="/register" className="nav-link">Register</a></li>
+                {/* Only shown when logged in */}
+                { authToken ? <li><a href="/profile" className="nav-link">Profile</a></li> : '' }
+                { authToken ? 
+                  <li className="basket-link">
+                    <a href="/basket" className="nav-link">
+                      Basket
+                      <span className="basket-count">0</span>
+                    </a>
+                  </li> : '' }
+                { authToken ? <li onClick={logoutUser}><a href="/logout" className="nav-link">Logout</a></li> : '' }
               </ul>
             </nav>
           </div>
