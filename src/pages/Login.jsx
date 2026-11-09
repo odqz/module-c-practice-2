@@ -1,6 +1,24 @@
 import { Layout } from '../components/page/Layout'
+import { API } from '../components/api/Api'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function Login() {
+  const nav = useNavigate()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  function authenticateUser(e) {
+    e.preventDefault()
+
+    API.post('/auth/login', {'username': username, 'password': password})
+    .then(res => {
+      localStorage.setItem('auth-token', res.data.accessToken)
+      nav('/')
+    })
+    .catch(err => console.error(err))
+  }
+
   return (
     <>
       <Layout>
@@ -15,14 +33,21 @@ export function Login() {
               {/* <!-- Error message placeholder --> */}
               <p className="login-error">Email and password are required!</p>
 
-              <form className="login-form">
+              <form className="login-form" onSubmit={authenticateUser}>
                 {/* <!-- Email --> */}
                 <div className="form-group">
-                  <label htmlFor="email">
-                    Email
+                  <label htmlFor="username">
+                    Username
                     <span className="required">*</span>
                   </label>
-                  <input type="email" id="email" placeholder="Customer Email" />
+                  <input 
+                    type="text" 
+                    id="username" 
+                    placeholder="Customer Username" 
+                    required
+                    onChange={(e) => {setUsername(e.target.value)}}
+                    value={username}
+                  />
                 </div>
 
                 {/* <!-- Password --> */}
@@ -35,6 +60,9 @@ export function Login() {
                     type="password"
                     id="password"
                     placeholder="Customer Password"
+                    required
+                    onChange={(e) => {setPassword(e.target.value)}}
+                    value={password}
                   />
                 </div>
 
