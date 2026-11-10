@@ -1,6 +1,44 @@
+import { useEffect, useState } from 'react'
 import { Layout } from '../components/page/Layout'
+import { API } from '../components/api/Api'
 
 export function Profile() {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [address, setAddress] = useState('')
+  const [country, setCountry] = useState('')
+  const [postalCode, setPostalCode] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+
+  function getAuthUser() {
+    API.get('/user/me')
+    .then(res => {
+      setFirstName(res.data.firstName)
+      setLastName(res.data.lastName)
+      setAddress(res.data.address.address)
+      setCountry(res.data.address.country)
+      setPostalCode(res.data.address.postalCode)
+      setEmail(res.data.email)
+      setPhone(res.data.phone)
+    })
+    .catch(err => console.error(err))
+  }
+
+  useEffect(() => {
+    getAuthUser()
+  }, [])
+
+  function updateAuthUser(e) {
+    e.preventDefault()
+
+    API.patch('/users/2', {firstName, lastName, 'address': {address, country, postalCode}, email, phone})
+    .then(res => {
+      console.log(res.data)
+    })
+    .catch(err => console.error(err))
+  }
+
   return (
     <>
       <Layout>
@@ -10,7 +48,7 @@ export function Profile() {
             <h3>Manage Your Profile</h3>
           </div>
           <div className="profile-container">
-            <form method="POST">
+            <form method="POST" onSubmit={updateAuthUser}>
               <div className="form-inner">
                 <div className="form-group">
                   <label htmlFor="firstname">
@@ -21,10 +59,11 @@ export function Profile() {
                     id="firstname"
                     name="firstname"
                     type="text"
-                    value="John"
                     title="Firstname"
                     placeholder="Firstname"
                     aria-label="Firstname"
+                    onChange={e => setFirstName(e.target.value)}
+                    value={firstName}
                   />
                 </div>
                 <div className="form-group">
@@ -36,36 +75,42 @@ export function Profile() {
                     id="lastname"
                     name="lastname"
                     type="text"
-                    value="Doe"
                     title="Lastname"
                     placeholder="Lastname"
                     aria-label="Lastname"
+                    onChange={e => setLastName(e.target.value)}
+                    value={lastName}
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="address1">
-                    First address line
+                  <label htmlFor="address">
+                    Address line
                     <span className="required">*</span>
                   </label>
                   <input
-                    id="address1"
-                    name="address1"
+                    id="address"
+                    name="addressa"
                     type="text"
-                    value="123 Street"
-                    title="First address line"
-                    placeholder="First address line"
-                    aria-label="First address line"
+                    title="Address line"
+                    placeholder="Address line"
+                    aria-label="Address line"
+                    onChange={e => setAddress(e.target.value)}
+                    value={address}
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="address2">Second address line</label>
+                  <label htmlFor="country">
+                    Country
+                  </label>
                   <input
-                    id="address2"
-                    name="address2"
+                    id="country"
+                    name="country"
                     type="text"
-                    title="Second address line"
-                    placeholder="Second address line"
-                    aria-label="Second address line"
+                    title="Country"
+                    placeholder="Country"
+                    aria-label="Country"
+                    onChange={e => setCountry(e.target.value)}
+                    value={country}
                   />
                 </div>
                 <div className="form-group">
@@ -77,10 +122,11 @@ export function Profile() {
                     id="postcode"
                     name="postcode"
                     type="text"
-                    value="AB12CD"
                     title="Postcode"
                     placeholder="Postcode"
                     aria-label="Postcode"
+                    onChange={e => setPostalCode(e.target.value)}
+                    value={postalCode}
                   />
                 </div>
                 <div className="form-group">
@@ -89,11 +135,12 @@ export function Profile() {
                     id="email"
                     name="email"
                     type="email"
-                    value="john.doe@mail.com"
                     disabled
                     title="Email (view only)"
                     placeholder="Email"
                     aria-label="Email (view only)"
+                    onChange={e => setEmail(e.target.value)}
+                    value={email}
                   />
                 </div>
                 <div className="form-group">
@@ -105,10 +152,11 @@ export function Profile() {
                     id="phone"
                     name="phone"
                     type="tel"
-                    value="06701234567"
                     title="Phone"
                     placeholder="Phone number"
                     aria-label="Phone number"
+                    onChange={e => setPhone(e.target.value)}
+                    value={phone}
                   />
                 </div>
               </div>
